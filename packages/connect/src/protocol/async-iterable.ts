@@ -23,6 +23,7 @@ import {
 import type { Serialization } from "./serialization.js";
 import type { Compression } from "./compression.js";
 import { assertReadMaxBytes } from "./limit-io.js";
+import { Uint8ArrayList } from "uint8arraylist/dist/src/index.js";
 
 /**
  * A function that takes an asynchronous iterable as a source, and returns a
@@ -1008,40 +1009,32 @@ export function transformJoinEnvelopes(): AsyncIterableTransform<
 export function transformSplitEnvelope(
   readMaxBytes: number,
 ): AsyncIterableTransform<Uint8Array, EnvelopedMessage> {
-  // append chunk to buffer, returning updated buffer
-  function append(buffer: Uint8Array, chunk: Uint8Array): Uint8Array {
-    const n = new Uint8Array(buffer.byteLength + chunk.byteLength);
-    n.set(buffer);
-    n.set(chunk, buffer.length);
-    return n;
-  }
-
   // tuple 0: envelope, or undefined if incomplete
   // tuple 1: remainder of the buffer
   function shiftEnvelope(
-    buffer: Uint8Array,
-    header: { length: number; flags: number },
-  ): [EnvelopedMessage | undefined, Uint8Array] {
+    buffer: Uint8ArrayList,
+    header: { length: number; flags: number }
+  ): EnvelopedMessage | undefined {
     if (buffer.byteLength < 5 + header.length) {
-      return [undefined, buffer];
+      return undefined;
     }
-    return [
-      { flags: header.flags, data: buffer.subarray(5, 5 + header.length) },
-      buffer.subarray(5 + header.length),
-    ];
+    const data = buffer.subarray(5, 5 + header.length);
+    buffer.consume(5 + header.length);
+    return { flags: header.flags, data };
   }
 
   // undefined: header is incomplete
   function peekHeader(
-    buffer: Uint8Array,
+    bufferList: Uint8ArrayList
   ): { length: number; flags: number } | undefined {
-    if (buffer.byteLength < 5) {
+    if (bufferList.byteLength < 5) {
       return undefined;
     }
+    const buffer = bufferList.subarray();
     const view = new DataView(
       buffer.buffer,
       buffer.byteOffset,
-      buffer.byteLength,
+      buffer.byteLength
     );
     const length = view.getUint32(1); // 4 bytes message length
     const flags = view.getUint8(0); // first byte is flags
@@ -1049,17 +1042,17 @@ export function transformSplitEnvelope(
   }
 
   return async function* (iterable): AsyncIterable<EnvelopedMessage> {
-    let buffer = new Uint8Array(0);
+    const { Uint8ArrayList } = await import("uint8arraylist/dist/src/index.js");
+    const buffer = new Uint8ArrayList();
     for await (const chunk of iterable) {
-      buffer = append(buffer, chunk);
+      buffer.append(chunk);
       for (;;) {
         const header = peekHeader(buffer);
         if (!header) {
           break;
         }
         assertReadMaxBytes(readMaxBytes, header.length, true);
-        let env: EnvelopedMessage | undefined;
-        [env, buffer] = shiftEnvelope(buffer, header);
+        const env = shiftEnvelope(buffer, header);
         if (!env) {
           break;
         }

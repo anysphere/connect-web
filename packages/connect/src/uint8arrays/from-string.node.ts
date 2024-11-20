@@ -15,7 +15,7 @@ export function fromString (string: string, encoding: SupportedEncodings = 'utf8
   const base = bases[encoding]
 
   if (base == null) {
-    throw new Error(`Unsupported encoding "${encoding}"`)
+    throw new Error(`Unsupported encoding "${String(encoding)}"`)
   }
 
   if (encoding === 'utf8' || encoding === 'utf-8') {

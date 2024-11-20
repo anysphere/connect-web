@@ -1030,7 +1030,7 @@ export function transformSplitEnvelope(
     if (bufferList.byteLength < 5) {
       return undefined;
     }
-    const buffer = bufferList.subarray();
+    const buffer = bufferList.subarray(0, 5);
     const view = new DataView(
       buffer.buffer,
       buffer.byteOffset,
@@ -1042,7 +1042,6 @@ export function transformSplitEnvelope(
   }
 
   return async function* (iterable): AsyncIterable<EnvelopedMessage> {
-    const { Uint8ArrayList } = await import("uint8arraylist/dist/src/index.js");
     const buffer = new Uint8ArrayList();
     for await (const chunk of iterable) {
       buffer.append(chunk);

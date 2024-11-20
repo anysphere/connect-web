@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer'
-import { asUint8Array } from './util/as-uint8array.js'
+import { asUint8Array } from './util/as-uint8array.node.js'
 
 /**
  * Returns a `Uint8Array` of the requested size. Referenced memory will

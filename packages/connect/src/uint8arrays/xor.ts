@@ -1,5 +1,5 @@
-import { allocUnsafe } from './alloc.js'
-import { asUint8Array } from './util/as-uint8array.js'
+import { allocUnsafe } from './alloc.node.js'
+import { asUint8Array } from './util/as-uint8array.node.js'
 
 /**
  * Returns the xor distance between two Uint8Arrays

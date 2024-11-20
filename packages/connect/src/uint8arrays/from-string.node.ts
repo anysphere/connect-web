@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer'
 import bases, { type SupportedEncodings } from './util/bases.js'
-import { asUint8Array } from './util/as-uint8array.js'
+import { asUint8Array } from './util/as-uint8array.node.js'
 
 export type { SupportedEncodings }
 

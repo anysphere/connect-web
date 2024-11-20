@@ -165,10 +165,10 @@
 
 import { equals } from './equals.js'
 import { xor } from './xor.js'
-import { compare } from './compare.js'
-import { concat } from './concat.js'
-import { fromString } from './from-string.js'
-import { toString } from './to-string.js'
+import { compare } from './compare.node.js'
+import { concat } from './concat.node.js'
+import { fromString } from './from-string.node.js'
+import { toString } from './to-string.node.js'
 
 export {
   compare,

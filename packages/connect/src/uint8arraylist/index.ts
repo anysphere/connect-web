@@ -80,9 +80,9 @@
  *
  * Borrows liberally from [bl](https://www.npmjs.com/package/bl) but only uses native JS types.
  */
-import { allocUnsafe, alloc } from '../uint8arrays/alloc.js'
-import { concat } from '../uint8arrays/concat.js'
-import { equals } from '../uint8arrays/equals.js'
+import { allocUnsafe, alloc } from '../uint8arrays/alloc'
+import { concat } from '../uint8arrays/concat'
+import { equals } from '../uint8arrays/equals'
 
 const symbol = Symbol.for('@achingbrain/uint8arraylist')
 

@@ -23,7 +23,7 @@ import {
 import type { Serialization } from "./serialization.js";
 import type { Compression } from "./compression.js";
 import { assertReadMaxBytes } from "./limit-io.js";
-import { Uint8ArrayList } from "uint8arraylist/dist/src/index.js";
+import { Uint8ArrayList } from "../uint8arraylist/index.js";
 
 /**
  * A function that takes an asynchronous iterable as a source, and returns a

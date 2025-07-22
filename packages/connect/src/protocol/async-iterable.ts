@@ -14,8 +14,9 @@
 
 import { Code } from "../code.js";
 import { ConnectError } from "../connect-error.js";
-import { createEnvelopeDecoder, type EnvelopedMessage } from "./envelope.js";
+import type { EnvelopedMessage } from "./envelope.js";
 import {
+  createEnvelopeDecoder,
   encodeEnvelope,
   envelopeCompress,
   envelopeDecompress,
